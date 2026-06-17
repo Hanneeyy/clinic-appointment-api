@@ -73,3 +73,17 @@ These endpoints do not require authentication:
 ### Educational Limitations
  
 This is just for learning. The username, password, and token are hardcoded in the code. Tokens never expire. There's no real security. A real app needs password hashing, a database, HTTPS, and token expiration.
+
+### Why No Logout Endpoint?
+
+There's no logout endpoint in this API because it uses stateless bearer tokens. Once you get a token, the server doesn't track it. The token is valid as long as you send it in the header.
+
+To "logout", just stop sending the token. The server has no way to know if the token is still being used or not.
+
+**In production**, logout works differently:
+1. Server keeps a "blacklist" of logged-out tokens
+2. When you logout, your token gets added to the blacklist
+3. On every request, the server checks if the token is blacklisted
+4. If it's blacklisted, the request is rejected
+
+Or they use token expiration - tokens automatically expire after 15 minutes, so you can't use an old token forever.
